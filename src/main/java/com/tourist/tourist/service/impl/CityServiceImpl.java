@@ -61,7 +61,11 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public CityDto saveCity(CityDto cityDto) {
-        City cityEntity = cityMapper.toEntity(cityDto);
+        City cityEntity = cityRepository.findByNameCityIgnoreCase(cityDto.getNameCity());
+        if (cityEntity != null) {
+            throw new RuntimeException(cityDto.getNameCity() + "already exists.");
+        }
+        cityEntity = cityMapper.toEntity(cityDto);
         return cityMapper.toDto(cityRepository.save(cityEntity));
     }
 
