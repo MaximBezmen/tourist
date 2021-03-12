@@ -1,6 +1,7 @@
 package com.tourist.tourist.service.impl;
 
 import com.tourist.tourist.entity.City;
+import com.tourist.tourist.exeption.ResourceExist;
 import com.tourist.tourist.exeption.ResourceNotFoundException;
 import com.tourist.tourist.repo.CityRepository;
 import com.tourist.tourist.service.CityService;
@@ -63,7 +64,7 @@ public class CityServiceImpl implements CityService {
     public CityDto saveCity(CityDto cityDto) {
         City cityEntity = cityRepository.findByNameCityIgnoreCase(cityDto.getNameCity());
         if (cityEntity != null) {
-            throw new RuntimeException(cityDto.getNameCity() + "already exists.");
+            throw new ResourceExist(cityDto.getNameCity() + "already exists.");
         }
         cityEntity = cityMapper.toEntity(cityDto);
         return cityMapper.toDto(cityRepository.save(cityEntity));
