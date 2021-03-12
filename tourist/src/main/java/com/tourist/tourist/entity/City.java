@@ -8,10 +8,10 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-public class City extends AbstractEntity{
+public class City extends AbstractEntity {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name = "name_city")
     private String nameCity;
