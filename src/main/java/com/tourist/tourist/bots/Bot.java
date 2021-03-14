@@ -34,20 +34,28 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        City cityEntity = cityService.getByName(update.getMessage().getText());
-        String chatId = update.getMessage().getChatId().toString();
+        String inputText = update.getMessage().getText();
+        Long chatId = update.getMessage().getChatId();
         SendMessage sendMessage = new SendMessage();
+
         try {
-            if (cityEntity != null){
-                execute(sendMessage.setChatId(chatId).setText(cityEntity.getDescription()));
-            }else {
-
-                execute(sendMessage.setChatId(chatId).setText("City not found! Sorry"));
+            if (inputText.startsWith("/start")) {
+                sendMessage.setText("Hello.\nEnter the name of the city and I'll tell you where can to go there.");
+            } else {
+                execute(sendMessage.setChatId(chatId).setText(getDescriptionOfCity(inputText)));
             }
-
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private String getDescriptionOfCity(String city) {
+        String message = "City not found! Sorry";
+        City cityEntity = cityService.getByName(city);
+        if (cityEntity != null) {
+            message = cityEntity.getDescription();
+        }
+        return message;
     }
 }
