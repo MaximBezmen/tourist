@@ -25,7 +25,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public CityDto getCity(Long cityId) {
         City cityEntity = cityRepository.findById(cityId).orElseThrow(() ->
-                new ResourceNotFoundException("Citi", "id", cityId));
+                new ResourceNotFoundException("City", "id", cityId));
         return cityMapper.toDto(cityEntity);
     }
 
@@ -41,13 +41,13 @@ public class CityServiceImpl implements CityService {
     @Override
     public CityDto updateCity(CityDto cityDto, Long cityId) {
         City cityEntity = cityRepository.findById(cityId).orElseThrow(() ->
-                new ResourceNotFoundException("Citi", "id", cityId));
+                new ResourceNotFoundException("City", "id", cityId));
         if (cityDto.getNameCity() != null) {
             cityEntity.setNameCity(cityDto.getNameCity());
 
         }
         if (cityDto.getDescription() != null) {
-            cityEntity.setDescription(cityEntity.getDescription());
+            cityEntity.setDescription(cityDto.getDescription());
         }
 
         return cityMapper.toDto(cityRepository.save(cityEntity));
@@ -56,7 +56,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public void deleteCity(Long id) {
         City cityEntity = cityRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Citi", "id", id));
+                new ResourceNotFoundException("City", "id", id));
         cityRepository.delete(cityEntity);
     }
 
