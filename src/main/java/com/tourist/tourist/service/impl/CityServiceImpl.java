@@ -39,9 +39,9 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public CityDto updateCity(CityDto cityDto) {
-        City cityEntity = cityRepository.findById(cityDto.getId()).orElseThrow(() ->
-                new ResourceNotFoundException("Citi", "id", cityDto.getId()));
+    public CityDto updateCity(CityDto cityDto, Long cityId) {
+        City cityEntity = cityRepository.findById(cityId).orElseThrow(() ->
+                new ResourceNotFoundException("Citi", "id", cityId));
         if (cityDto.getNameCity() != null) {
             cityEntity.setNameCity(cityDto.getNameCity());
 
