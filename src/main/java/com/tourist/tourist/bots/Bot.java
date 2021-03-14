@@ -41,8 +41,10 @@ public class Bot extends TelegramLongPollingBot {
         try {
             if (inputText.startsWith("/start")) {
                 sendMessage.setText("Hello.\nEnter the name of the city and I'll tell you where can to go there.");
+            }{
+                sendMessage.setText(getDescriptionOfCity(inputText));
             }
-            execute(sendMessage.setChatId(chatId).setText(getDescriptionOfCity(inputText)));
+            execute(sendMessage.setChatId(chatId));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
