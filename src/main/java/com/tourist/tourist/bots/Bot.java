@@ -50,6 +50,7 @@ public class Bot extends TelegramLongPollingBot {
                 cityDto.setNameCity(city);
                 cityDto.setDescription(description);
                 cityService.saveCity(cityDto);
+                sendMessage.setText("City added !");
             } else {
                 sendMessage.setText(getDescriptionOfCity(inputText));
             }
