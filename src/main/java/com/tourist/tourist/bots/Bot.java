@@ -2,6 +2,7 @@ package com.tourist.tourist.bots;
 
 import com.tourist.tourist.entity.City;
 import com.tourist.tourist.service.CityService;
+import com.tourist.tourist.service.dto.CityDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -41,6 +42,14 @@ public class Bot extends TelegramLongPollingBot {
         try {
             if (inputText.startsWith("/start")) {
                 sendMessage.setText("Hello.\nEnter the name of the city and I'll tell you where can to go there.");
+            } else if (inputText.startsWith("/add city")){
+               String [] massage = inputText.split(" ",3);
+               String city = massage[2];
+               String description = massage[3];
+                CityDto cityDto = new CityDto();
+                cityDto.setNameCity(city);
+                cityDto.setDescription(description);
+                cityService.saveCity(cityDto);
             } else {
                 sendMessage.setText(getDescriptionOfCity(inputText));
             }
