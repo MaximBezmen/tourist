@@ -1,6 +1,7 @@
 package com.tourist.tourist.service.impl;
 
 import com.tourist.tourist.entity.City;
+import com.tourist.tourist.exeption.ResourceExist;
 import com.tourist.tourist.exeption.ResourceNotFoundException;
 import com.tourist.tourist.repo.CityRepository;
 import com.tourist.tourist.service.CityService;
@@ -24,7 +25,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public CityDto getCity(Long cityId) {
         City cityEntity = cityRepository.findById(cityId).orElseThrow(() ->
-                new ResourceNotFoundException("Citi", "id", cityId));
+                new ResourceNotFoundException("City", "id", cityId));
         return cityMapper.toDto(cityEntity);
     }
 
@@ -38,15 +39,15 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public CityDto updateCity(CityDto cityDto) {
-        City cityEntity = cityRepository.findById(cityDto.getId()).orElseThrow(() ->
-                new ResourceNotFoundException("Citi", "id", cityDto.getId()));
+    public CityDto updateCity(CityDto cityDto, Long cityId) {
+        City cityEntity = cityRepository.findById(cityId).orElseThrow(() ->
+                new ResourceNotFoundException("City", "id", cityId));
         if (cityDto.getNameCity() != null) {
             cityEntity.setNameCity(cityDto.getNameCity());
 
         }
         if (cityDto.getDescription() != null) {
-            cityEntity.setDescription(cityEntity.getDescription());
+            cityEntity.setDescription(cityDto.getDescription());
         }
 
         return cityMapper.toDto(cityRepository.save(cityEntity));
@@ -55,13 +56,17 @@ public class CityServiceImpl implements CityService {
     @Override
     public void deleteCity(Long id) {
         City cityEntity = cityRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Citi", "id", id));
+                new ResourceNotFoundException("City", "id", id));
         cityRepository.delete(cityEntity);
     }
 
     @Override
     public CityDto saveCity(CityDto cityDto) {
-        City cityEntity = cityMapper.toEntity(cityDto);
+        City cityEntity = cityRepository.findByNameCityIgnoreCase(cityDto.getNameCity());
+        if (cityEntity != null) {
+            throw new ResourceExist(cityDto.getNameCity() + " already exists.");
+        }
+        cityEntity = cityMapper.toEntity(cityDto);
         return cityMapper.toDto(cityRepository.save(cityEntity));
     }
 

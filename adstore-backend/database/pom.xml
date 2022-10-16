@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.adstore.database</groupId>
+  <artifactId>com-adstore-database</artifactId>
+  <version>1.0.0</version>
+  <name>database</name>
+  <description>database</description>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.7.1</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+  <properties>
+    <java.version>16</java.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jooq</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+    </dependency>
+
+  </dependencies>
+  <profiles>
+    <profile>
+      <id>generate-jooq-dev</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen-maven</artifactId>
+            <executions>
+              <execution>
+                <id>java-generator</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <configuration>
+                  <jdbc>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <url>${db.url}</url>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <user>${db.user}</user>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <password>${db.password}</password>
+                  </jdbc>
+                  <generator>
+                    <database>
+                      <inputSchema>public</inputSchema>
+                    </database>
+                    <target>
+                      <packageName>com.adstore.jooq</packageName>
+                      <directory>target/generated-sources</directory>
+                    </target>
+                  </generator>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <configuration>
+              <propertyFile>src/main/resources/liquibase-dev.properties</propertyFile>
+              <changeLogFile>src/main/resources/changelog/db.changelog.master.xml</changeLogFile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>generate-jooq-local</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen-maven</artifactId>
+            <executions>
+              <execution>
+                <id>java-generator</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <configuration>
+                  <jdbc>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <url>${db.url}</url>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <user>${db.user}</user>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <password>${db.password}</password>
+                  </jdbc>
+                  <generator>
+                    <database>
+                      <inputSchema>public</inputSchema>
+                    </database>
+                    <target>
+                      <packageName>com.adstore.jooq</packageName>
+                      <directory>target/generated-sources</directory>
+                    </target>
+                  </generator>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <configuration>
+              <propertyFile>src/main/resources/liquibase.properties</propertyFile>
+              <changeLogFile>src/main/resources/changelog/db.changelog.master.xml</changeLogFile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

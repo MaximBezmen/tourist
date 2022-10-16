@@ -1,0 +1,26 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Build adstore-api
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build step
+        uses: actions/setup-java@v3
+        with:
+          java-version: '16'
+          distribution: 'temurin'
+          cache: maven
+      - run: chmod +x ./mvnw
+      - run: ./mvnw -U liquibase:update clean install -P generate-jooq-dev -Ddb.url=${{ secrets.DB_URL }} -Ddb.user=${{ secrets.DB_USER }} -Ddb.password=${{ secrets.DB_PASSWORD }} -Dspring.profiles.active=dev

@@ -2,6 +2,7 @@ package com.tourist.tourist.bots;
 
 import com.tourist.tourist.entity.City;
 import com.tourist.tourist.service.CityService;
+import com.tourist.tourist.service.dto.CityDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -34,20 +35,38 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        City cityEntity = cityService.getByName(update.getMessage().getText());
-        String chatId = update.getMessage().getChatId().toString();
+        String inputText = update.getMessage().getText();
+        Long chatId = update.getMessage().getChatId();
         SendMessage sendMessage = new SendMessage();
+
         try {
-            if (cityEntity != null){
-                execute(sendMessage.setChatId(chatId).setText(cityEntity.getDescription()));
-            }else {
-
-                execute(sendMessage.setChatId(chatId).setText("City not found! Sorry"));
+            if (inputText.startsWith("/start")) {
+                sendMessage.setText("Hello.\nEnter the name of the city and I'll tell you where can to go there.");
+            } else if (inputText.startsWith("/add city")){
+               String [] massage = inputText.split(" ",4);
+               String city = massage[2];
+               String description = massage[3];
+                CityDto cityDto = new CityDto();
+                cityDto.setNameCity(city);
+                cityDto.setDescription(description);
+                cityService.saveCity(cityDto);
+                sendMessage.setText("City added!");
+            } else {
+                sendMessage.setText(getDescriptionOfCity(inputText));
             }
-
+            execute(sendMessage.setChatId(chatId));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private String getDescriptionOfCity(String city) {
+        String message = "City not found! Sorry";
+        City cityEntity = cityService.getByName(city);
+        if (cityEntity != null) {
+            message = cityEntity.getDescription();
+        }
+        return message;
     }
 }
